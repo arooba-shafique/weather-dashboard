@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css"/>
+  <style>
+.wi-day-sunny { color: #FFD700; }
+.wi-night-clear { color: #87CEEB; }
+.wi-day-cloudy { color: #B0C4DE; }
+.wi-night-alt-cloudy { color: #708090; }
+.wi-cloud { color: #C0C0C0; }
+.wi-cloudy { color: #A9A9A9; }
+.wi-showers { color: #00CED1; }
+.wi-day-rain { color: #1E90FF; }
+.wi-night-alt-rain { color: #4682B4; }
+.wi-thunderstorm { color: #FFA500; }
+.wi-snow { color: #FFFFFF; }
+.wi-fog { color: #696969; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #1e293b;
+      background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 1px, transparent 1px, transparent 10px);
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 700;
+      font-size: 3rem;
+      color: #10b981;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+    }
+    #search-box {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    input, button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      font-family: 'Poppins', sans-serif;
+    }
+    input {
+      width: 220px;
+      margin-right: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    button {
+      background: #10b981;
+      color: #fff;
+      cursor: pointer;
+      margin-left: 5px;
+      transition: 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    button:hover {
+      background: #059669;
+    }
+    #cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+      justify-content: center;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 25px;
+      width: 300px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+      position: relative;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    }
+    .card h3 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #10b981;
+      text-align: center;
+      letter-spacing: 0.5px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+      margin-bottom: 10px;
+    }
+    .card p {
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .wi {
+      font-size: 40px;
+    }
+    .forecast {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .forecast-day {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 10px;
+      flex: 1 1 45px;
+      text-align: center;
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .forecast-day:hover {
+      transform: translateY(-3px);
+      background: rgba(16, 185, 129, 0.2);
+    }
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid #10b981;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-left: 12px;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .remove-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      color: #fff;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      font-weight: bold;
+      line-height: 22px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+    .remove-btn:hover {
+      background: #10b981;
+      color: #fff;
+      border-color: #10b981;
+    }
+    @media (max-width: 600px) {
+      .card {
+        width: 90%;
+      }
+      .forecast-day {
+        flex: 1 1 30%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Weather API Insights</h1>
+  <div id="search-box">
+    <input id="city-input" type="text" placeholder="Enter city" />
+    <button onclick="addCity()">Add City</button>
+    <button onclick="detectLocation()">Use My Location</button>
+    <span id="loading" style="display:none;" class="spinner"></span>
+  </div>
+  <div id="cards"></div>
+  <script>
+    const API_KEY = "f50677a0706647ca64d1362b7025c0e9";
+    const cards = document.getElementById("cards");
+    const loading = document.getElementById("loading");
+    const iconMap = {
+      "01d": "wi-day-sunny",
+      "01n": "wi-night-clear",
+      "02d": "wi-day-cloudy",
+      "02n": "wi-night-alt-cloudy",
+      "03d": "wi-cloud",
+      "03n": "wi-cloud",
+      "04d": "wi-cloudy",
+      "04n": "wi-cloudy",
+      "09d": "wi-showers",
+      "09n": "wi-showers",
+      "10d": "wi-day-rain",
+      "10n": "wi-night-alt-rain",
+      "11d": "wi-thunderstorm",
+      "11n": "wi-thunderstorm",
+      "13d": "wi-snow",
+      "13n": "wi-snow",
+      "50d": "wi-fog",
+      "50n": "wi-fog"
+    };
+    const cityCoordinates = {
+      "lahore": { name: "Lahore, PK", lat: 31.5497, lon: 74.3436 },
+      "karachi": { name: "Karachi, PK", lat: 24.8607, lon: 67.0011 },
+      "islamabad": { name: "Islamabad, PK", lat: 33.6844, lon: 73.0479 },
+      "rawalpindi": { name: "Rawalpindi, PK", lat: 33.6007, lon: 73.0679 },
+      "faisalabad": { name: "Faisalabad, PK", lat: 31.418, lon: 73.0791 },
+      "multan": { name: "Multan, PK", lat: 30.1575, lon: 71.5249 },
+      "gujranwala": { name: "Gujranwala, PK", lat: 32.1877, lon: 74.1945 },
+      "bahawalpur": { name: "Bahawalpur, PK", lat: 29.3956, lon: 71.6836 },
+      "sargodha": { name: "Sargodha, PK", lat: 32.0836, lon: 72.6711 },
+      "okara": { name: "Okara, PK", lat: 30.8103, lon: 73.4515 },
+      "sahiwal": { name: "Sahiwal, PK", lat: 30.6667, lon: 73.1000 },
+      "peshawar": { name: "Peshawar, PK", lat: 34.0151, lon: 71.5249 },
+      "quetta": { name: "Quetta, PK", lat: 30.1798, lon: 66.9750 }
+    };
+    async function addCity() {
+      const cityInputField = document.getElementById("city-input");
+      const cityInput = cityInputField.value.trim().toLowerCase();
+      if (!cityInput) return;
+      loading.style.display = "inline-block";
+      if (!cityCoordinates[cityInput]) {
+        alert("City not available in dashboard list.");
+        loading.style.display = "none";
+        return;
+      }
+      const { name, lat, lon } = cityCoordinates[cityInput];
+      await createCard(name, lat, lon);
+      cityInputField.value = "";
+      loading.style.display = "none";
+    }
+    async function detectLocation() {
+      if (!navigator.geolocation) {
+        alert("Geolocation not supported in your browser.");
+        return;
+      }
+      loading.style.display = "inline-block";
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        try {
+          const geoRes = await fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`);
+          const geoData = await geoRes.json();
+          const city = geoData[0]?.name || "Unknown City";
+          const country = geoData[0]?.country || "PK";
+          const cityName = `${city}, ${country}`;
+          await createCard(cityName, lat, lon);
+        } catch (err) {
+          await createCard("My Location", lat, lon);
+        }
+        loading.style.display = "none";
+      }, (err) => {
+        alert("Unable to get location.");
+        loading.style.display = "none";
+      });
+    }
+    async function createCard(cityName, lat, lon) {
+      const card = document.createElement("div");
+      card.className = "card";
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "remove-btn";
+      removeBtn.textContent = "×";
+      removeBtn.onclick = () => card.remove();
+      card.appendChild(removeBtn);
+      card.innerHTML += `<h3>${cityName}</h3><p>Loading weather...</p>`;
+      cards.appendChild(card);
+      try {
+        const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`);
+        const weather = await weatherRes.json();
+        const forecastRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`);
+        const forecastData = await forecastRes.json();
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
+        let forecastHTML = `<div class="forecast">`;
+        const todayWeather = forecastData.list.find(f => f.dt_txt.includes("12:00:00") && f.dt_txt.startsWith(todayStr));
+        if(todayWeather) {
+          const iconCode = todayWeather.weather[0].icon;
+          const iconClass = iconMap[iconCode] || "wi-day-sunny";
+          forecastHTML += `
+            <div class="forecast-day">
+              <div>Today</div>
+              <i class="wi ${iconClass}"></i>
+              <div>${todayWeather.main.temp}°C</div>
+            </div>`;
+        }
+        const dailyForecasts = {};
+        forecastData.list.forEach(f => {
+          const date = f.dt_txt.split(" ")[0];
+          if (f.dt_txt.includes("12:00:00") && date !== todayStr && !dailyForecasts[date]) {
+            dailyForecasts[date] = f;
+          }
+        });
+        Object.values(dailyForecasts).slice(0,5).forEach(f => {
+          const d = new Date(f.dt_txt);
+          const day = d.toLocaleDateString("en-US", { weekday: "short" });
+          const iconCode = f.weather[0].icon;
+          const iconClass = iconMap[iconCode] || "wi-day-sunny";
+          forecastHTML += `
+            <div class="forecast-day">
+              <div>${day}</div>
+              <i class="wi ${iconClass}"></i>
+              <div>${f.main.temp}°C</div>
+            </div>`;
+        });
+        forecastHTML += `</div>`;
+        const mainIcon = iconMap[weather.weather[0].icon] || "wi-day-sunny";
+        card.innerHTML = `
+          <h3>${cityName}</h3>
+          <p style="font-size:18px; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <strong>${weather.main.temp}°C</strong>, ${weather.weather[0].description} 
+            <i class="wi ${mainIcon}"></i>
+          </p>
+          ${forecastHTML}
+        `;
+        card.appendChild(removeBtn);
+      } catch (err) {
+        card.innerHTML = `<h3>${cityName}</h3><p>Error loading weather data.</p>`;
+        card.appendChild(removeBtn);
+      }
+    }
+  </script>
+</body>
+</html>
