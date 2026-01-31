@@ -6,12 +6,12 @@ A **Weather Dashboard web application** that fetches and displays **real-time we
 
 ## 🌤️ Features
 
-- 🔍 **City Search** – Enter a city name to get real-time weather.  
-- 📍 **Geolocation Support** – Detect user location to display local weather.  
-- 🌡️ **Current Weather Information** – Shows temperature, humidity, wind speed, and weather description.  
-- 📅 **5-Day Forecast** – Displays forecast for the upcoming five days.  
-- 🌐 **API Integration** – Fetches live weather data using a weather API (e.g., OpenWeatherMap).  
-- 🗂️ **Responsive UI** – Works on desktop and mobile devices.
+- **City Search** – Enter a city name to get real-time weather.  
+- **Geolocation Support** – Detect user location to display local weather.  
+- **Current Weather Information** – Shows temperature, humidity, wind speed, and weather description.  
+- **5-Day Forecast** – Displays forecast for the upcoming five days.  
+- **API Integration** – Fetches live weather data using a weather API (e.g., OpenWeatherMap).  
+- **Responsive UI** – Works on desktop and mobile devices.
 
 ---
 
