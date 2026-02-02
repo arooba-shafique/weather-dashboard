@@ -19,7 +19,27 @@
 .wi-thunderstorm { color: #FFA500; }
 .wi-snow { color: #FFFFFF; }
 .wi-fog { color: #696969; }
+@media (max-width: 600px) {
+  #search-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  #search-box input {
+    width: 90%;
+    margin-right: 0;
+  }
+
+  #search-box button {
+    width: 45%;
+    margin-left: 0;
+  }
+}
+
     body {
+        
       font-family: 'Poppins', sans-serif;
       background-color: #1e293b;
       background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 1px, transparent 1px, transparent 10px);
